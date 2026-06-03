@@ -19,6 +19,9 @@
   --html: #e34c26;
   --css: #2965f1;
   --js: #d6a700;
+  --conditions: #6d28d9;
+  --boucles: #b45309;
+  --fonctions: #0e7490;
   --ombre: 0 10px 30px rgba(0, 0, 60, 0.12);
   --radius: 16px;
 }
@@ -250,6 +253,9 @@ body {
 .badge-html { background: var(--html); }
 .badge-css  { background: var(--css); }
 .badge-js   { background: var(--js); color: #3a2e00; }
+.badge-conditions { background: var(--conditions); }
+.badge-boucles    { background: var(--boucles); }
+.badge-fonctions  { background: var(--fonctions); }
 
 .badge-type {
   background: var(--navy-pale);
@@ -484,4 +490,75 @@ body {
   .actions-resultats .btn {
     flex: 1;
   }
+}
+
+/* ===== Choix du niveau (accueil) ===== */
+.choix-niveaux {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin: 18px 0;
+}
+@media (max-width: 560px) {
+  .choix-niveaux {
+    grid-template-columns: 1fr;
+  }
+}
+.carte-niveau {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  text-align: left;
+  padding: 16px;
+  border: 2px solid var(--gris-clair);
+  border-radius: 12px;
+  background: var(--blanc);
+  cursor: pointer;
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.05s;
+}
+.carte-niveau:hover {
+  border-color: var(--navy);
+}
+.carte-niveau:active {
+  transform: scale(0.99);
+}
+.carte-niveau-active {
+  border-color: var(--navy);
+  box-shadow: 0 0 0 3px rgba(0, 0, 99, 0.15);
+}
+.niveau-titre {
+  font-weight: 700;
+  font-size: 1.05rem;
+  color: var(--navy);
+}
+.niveau-theme {
+  font-weight: 600;
+  font-size: 0.92rem;
+  color: var(--texte);
+}
+.niveau-desc {
+  font-size: 0.85rem;
+  color: var(--gris);
+}
+.niveau-nb {
+  margin-top: 4px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--vert);
+}
+
+/* Lien « ← Changer de niveau » (étape 2 de l'accueil) */
+.lien-retour {
+  display: inline-block;
+  margin: 0 0 6px;
+  padding: 4px 0;
+  background: none;
+  border: none;
+  color: var(--navy);
+  font-weight: 600;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+.lien-retour:hover {
+  text-decoration: underline;
 }

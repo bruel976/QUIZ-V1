@@ -11,19 +11,23 @@ const ETAPES = { ACCUEIL: 'accueil', QUIZ: 'quiz', RESULTATS: 'resultats' }
 export default function App() {
   const [etape, setEtape] = useState(ETAPES.ACCUEIL)
   const [etudiant, setEtudiant] = useState({ nom: '', prenom: '' })
+  const [niveau, setNiveau] = useState(null) // niveau choisi sur l'accueil
+  const [parcours, setParcours] = useState(null) // parcours (option) choisi
   const [reponses, setReponses] = useState({}) // { [idQuestion]: valeur }
   const [tentative, setTentative] = useState(0) // change → on régénère les questions
 
-  // Questions préparées (catégories ordonnées + options mélangées).
-  // Recalculé à chaque nouvelle tentative.
+  // Questions préparées pour le parcours choisi (vide tant qu'aucun parcours).
+  // Recalculé à chaque nouvelle tentative ou changement de parcours.
   const questions = useMemo(
-    () => preparerQuestions(banque),
-    [tentative],
+    () => (parcours ? preparerQuestions(banque, parcours) : []),
+    [tentative, parcours],
   )
 
   // Démarrage du quiz depuis l'écran d'accueil
   function demarrer(infos) {
-    setEtudiant(infos)
+    setEtudiant({ nom: infos.nom, prenom: infos.prenom })
+    setNiveau(infos.niveau)
+    setParcours(infos.parcours)
     setReponses({})
     setEtape(ETAPES.QUIZ)
   }
@@ -43,6 +47,8 @@ export default function App() {
     setTentative((t) => t + 1)
     setReponses({})
     setEtudiant({ nom: '', prenom: '' })
+    setNiveau(null)
+    setParcours(null)
     setEtape(ETAPES.ACCUEIL)
   }
 
@@ -68,6 +74,8 @@ export default function App() {
         {etape === ETAPES.RESULTATS && resultat && (
           <Resultats
             etudiant={etudiant}
+            niveau={niveau}
+            parcours={parcours}
             resultat={resultat}
             onRecommencer={recommencer}
           />

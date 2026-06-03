@@ -2,8 +2,6 @@
 //  Utilitaires : mélange aléatoire, calcul du score et de la note
 // =============================================================
 
-import { ORDRE_CATEGORIES } from '../data/questions.js'
-
 // Mélange un tableau (algorithme de Fisher-Yates) en renvoyant une COPIE.
 export function melanger(tableau) {
   const copie = [...tableau]
@@ -14,12 +12,13 @@ export function melanger(tableau) {
   return copie
 }
 
-// Prépare les questions pour une tentative :
-//  - garde l'ordre des catégories (HTML → CSS → JS)
+// Prépare les questions d'un PARCOURS pour une tentative :
+//  - ne garde que les questions du parcours (même niveau + catégorie incluse)
+//  - ordonne selon l'ordre des catégories du parcours (parcours.categories)
 //  - mélange l'ordre des options de chaque question
-export function preparerQuestions(questions) {
-  const parCategorie = ORDRE_CATEGORIES.flatMap((cat) =>
-    questions.filter((q) => q.categorie === cat),
+export function preparerQuestions(questions, parcours) {
+  const parCategorie = parcours.categories.flatMap((cat) =>
+    questions.filter((q) => q.niveau === parcours.niveau && q.categorie === cat),
   )
   return parCategorie.map((q) => ({
     ...q,
