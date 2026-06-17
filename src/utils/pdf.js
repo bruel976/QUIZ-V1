@@ -11,7 +11,7 @@ const VERT = [22, 130, 70]
 const ROUGE = [193, 18, 31]
 const GRIS = [90, 90, 90]
 
-export function genererPDF({ nom, prenom, niveau, parcours, resultat }) {
+export function genererPDF({ nom, prenom, module, niveau, parcours, resultat }) {
   const doc = new jsPDF({ unit: 'mm', format: 'a4' })
   const pageW = doc.internal.pageSize.getWidth()
   const pageH = doc.internal.pageSize.getHeight()
@@ -32,7 +32,7 @@ export function genererPDF({ nom, prenom, niveau, parcours, resultat }) {
   doc.setTextColor(255, 255, 255)
   doc.setFont('helvetica', 'bold')
   doc.setFontSize(18)
-  doc.text('Sirel976 — Formation JavaScript', marge, 14)
+  doc.text(`Sirel976 — Formation · ${module.titre}`, marge, 14)
   doc.setFont('helvetica', 'normal')
   doc.setFontSize(11)
   doc.text(`${niveau.titre} — ${parcours.titre} : ${parcours.theme}`, marge, 23)

@@ -22,6 +22,10 @@
   --conditions: #6d28d9;
   --boucles: #b45309;
   --fonctions: #0e7490;
+  --processeur: #be123c;
+  --memoire: #047857;
+  --carte-mere: #7c3aed;
+  --peripheriques: #0369a1;
   --ombre: 0 10px 30px rgba(0, 0, 60, 0.12);
   --radius: 16px;
 }
@@ -256,6 +260,10 @@ body {
 .badge-conditions { background: var(--conditions); }
 .badge-boucles    { background: var(--boucles); }
 .badge-fonctions  { background: var(--fonctions); }
+.badge-processeur    { background: var(--processeur); }
+.badge-mémoire       { background: var(--memoire); }
+.badge-carte-mère    { background: var(--carte-mere); }
+.badge-périphériques { background: var(--peripheriques); }
 
 .badge-type {
   background: var(--navy-pale);
@@ -526,6 +534,13 @@ body {
   border-color: var(--navy);
   box-shadow: 0 0 0 3px rgba(0, 0, 99, 0.15);
 }
+/* Carte de module (EC) : met en avant une icône en tête de carte */
+.carte-module .module-icone {
+  font-size: 1.8rem;
+  line-height: 1;
+  margin-bottom: 2px;
+}
+
 .niveau-titre {
   font-weight: 700;
   font-size: 1.05rem;

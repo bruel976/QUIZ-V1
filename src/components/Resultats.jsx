@@ -1,19 +1,19 @@
 import { genererPDF } from '../utils/pdf.js'
 
 // Écran final : note, score par catégorie, corrigé complet, export PDF.
-export default function Resultats({ etudiant, niveau, parcours, resultat, onRecommencer }) {
+export default function Resultats({ etudiant, module, niveau, parcours, resultat, onRecommencer }) {
   const reussite = resultat.noteSur20 >= 10
 
   function telecharger() {
-    genererPDF({ nom: etudiant.nom, prenom: etudiant.prenom, niveau, parcours, resultat })
+    genererPDF({ nom: etudiant.nom, prenom: etudiant.prenom, module, niveau, parcours, resultat })
   }
 
   return (
     <div className="resultats">
-      <div className="badge-marque">Résultat · {niveau.titre}</div>
+      <div className="badge-marque">Résultat · {module.titre}</div>
       <h1 className="titre-principal">Quiz terminé !</h1>
       <p className="sous-titre">
-        Bravo {etudiant.prenom} {etudiant.nom} — {niveau.titre} · {parcours.titre}
+        Bravo {etudiant.prenom} {etudiant.nom} — {module.titre} · {niveau.titre} · {parcours.titre}
       </p>
 
       <div className={`carte-note ${reussite ? 'note-reussie' : 'note-echec'}`}>

@@ -11,6 +11,7 @@ const ETAPES = { ACCUEIL: 'accueil', QUIZ: 'quiz', RESULTATS: 'resultats' }
 export default function App() {
   const [etape, setEtape] = useState(ETAPES.ACCUEIL)
   const [etudiant, setEtudiant] = useState({ nom: '', prenom: '' })
+  const [module, setModule] = useState(null) // module (EC) choisi sur l'accueil
   const [niveau, setNiveau] = useState(null) // niveau choisi sur l'accueil
   const [parcours, setParcours] = useState(null) // parcours (option) choisi
   const [reponses, setReponses] = useState({}) // { [idQuestion]: valeur }
@@ -26,6 +27,7 @@ export default function App() {
   // Démarrage du quiz depuis l'écran d'accueil
   function demarrer(infos) {
     setEtudiant({ nom: infos.nom, prenom: infos.prenom })
+    setModule(infos.module)
     setNiveau(infos.niveau)
     setParcours(infos.parcours)
     setReponses({})
@@ -47,6 +49,7 @@ export default function App() {
     setTentative((t) => t + 1)
     setReponses({})
     setEtudiant({ nom: '', prenom: '' })
+    setModule(null)
     setNiveau(null)
     setParcours(null)
     setEtape(ETAPES.ACCUEIL)
@@ -74,6 +77,7 @@ export default function App() {
         {etape === ETAPES.RESULTATS && resultat && (
           <Resultats
             etudiant={etudiant}
+            module={module}
             niveau={niveau}
             parcours={parcours}
             resultat={resultat}

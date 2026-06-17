@@ -1,22 +1,32 @@
 import { useState } from 'react'
-import { NIVEAUX } from '../data/niveaux.js'
+import { MODULES } from '../data/niveaux.js'
 
-// Écran d'accueil en 2 étapes :
-//   1. choix du NIVEAU
-//   2. choix du PARCOURS du niveau + saisie nom/prénom
+// Écran d'accueil en 3 étapes :
+//   1. choix du MODULE (EC : Web statique, Web dynamique, Composants…)
+//   2. choix du NIVEAU du module
+//   3. choix du PARCOURS du niveau + saisie nom/prénom
 export default function Accueil({ onDemarrer }) {
+  const [moduleId, setModuleId] = useState(null)
   const [niveauId, setNiveauId] = useState(null)
   const [parcoursId, setParcoursId] = useState(null)
   const [nom, setNom] = useState('')
   const [prenom, setPrenom] = useState('')
 
-  const niveau = NIVEAUX.find((n) => n.id === niveauId) ?? null
+  const module = MODULES.find((m) => m.id === moduleId) ?? null
+  const niveau = module?.niveaux.find((n) => n.id === niveauId) ?? null
   const parcours = niveau?.parcours.find((p) => p.id === parcoursId) ?? null
 
   // Le bouton n'est actif que si un parcours est choisi ET les champs remplis.
   const pret = parcours !== null && nom.trim() !== '' && prenom.trim() !== ''
 
-  // Revenir au choix du niveau (étape 1).
+  // Revenir au choix du module (étape 1).
+  function changerModule() {
+    setModuleId(null)
+    setNiveauId(null)
+    setParcoursId(null)
+  }
+
+  // Revenir au choix du niveau (étape 2).
   function changerNiveau() {
     setNiveauId(null)
     setParcoursId(null)
@@ -25,20 +35,48 @@ export default function Accueil({ onDemarrer }) {
   function soumettre(e) {
     e.preventDefault()
     if (!pret) return
-    onDemarrer({ nom: nom.trim(), prenom: prenom.trim(), niveau, parcours })
+    onDemarrer({ nom: nom.trim(), prenom: prenom.trim(), module, niveau, parcours })
   }
 
   return (
     <div className="accueil">
       <div className="badge-marque">Sirel976 · Formation</div>
-      <h1 className="titre-principal">Quiz JavaScript</h1>
+      <h1 className="titre-principal">Quiz de formation</h1>
 
-      {/* ----- Étape 1 : choix du niveau ----- */}
-      {!niveau && (
+      {/* ----- Étape 1 : choix du module (EC) ----- */}
+      {!module && (
         <>
-          <p className="sous-titre">Étape 1 — Choisissez votre niveau</p>
+          <p className="sous-titre">Étape 1 — Choisissez votre module</p>
           <div className="choix-niveaux">
-            {NIVEAUX.map((n) => (
+            {MODULES.map((m) => (
+              <button
+                type="button"
+                key={m.id}
+                className="carte-niveau carte-module"
+                onClick={() => setModuleId(m.id)}
+              >
+                <span className="module-icone" aria-hidden="true">{m.icone}</span>
+                <span className="niveau-titre">{m.titre}</span>
+                <span className="niveau-theme">{m.sousTitre}</span>
+                <span className="niveau-desc">{m.description}</span>
+              </button>
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* ----- Étape 2 : choix du niveau ----- */}
+      {module && !niveau && (
+        <>
+          <p className="sous-titre">
+            Étape 2 — {module.icone} {module.titre} · Choisissez votre niveau
+          </p>
+          <button type="button" className="lien-retour" onClick={changerModule}>
+            ← Changer de module
+          </button>
+
+          <div className="choix-niveaux">
+            {module.niveaux.map((n) => (
               <button
                 type="button"
                 key={n.id}
@@ -48,7 +86,7 @@ export default function Accueil({ onDemarrer }) {
                 <span className="niveau-titre">{n.titre}</span>
                 <span className="niveau-theme">{n.sousTitre}</span>
                 <span className="niveau-desc">
-                  {n.parcours.length} parcours disponibles
+                  {n.parcours.length} parcours disponible{n.parcours.length > 1 ? 's' : ''}
                 </span>
               </button>
             ))}
@@ -56,11 +94,11 @@ export default function Accueil({ onDemarrer }) {
         </>
       )}
 
-      {/* ----- Étape 2 : choix du parcours + identité ----- */}
-      {niveau && (
+      {/* ----- Étape 3 : choix du parcours + identité ----- */}
+      {module && niveau && (
         <>
           <p className="sous-titre">
-            Étape 2 — {niveau.titre} · {niveau.sousTitre}
+            Étape 3 — {module.titre} · {niveau.titre} ({niveau.sousTitre})
           </p>
           <button type="button" className="lien-retour" onClick={changerNiveau}>
             ← Changer de niveau
@@ -87,7 +125,7 @@ export default function Accueil({ onDemarrer }) {
             {parcours ? (
               <ul>
                 <li>
-                  <strong>{parcours.titre}</strong> — {parcours.theme}.
+                  <strong>{module.titre}</strong> · {parcours.titre} — {parcours.theme}.
                 </li>
                 <li>
                   <strong>{parcours.nbQuestions} questions</strong>, une par écran,
