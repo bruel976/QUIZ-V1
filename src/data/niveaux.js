@@ -140,6 +140,64 @@ export const MODULES = [
       },
     ],
   },
+  {
+    id: 'algorithme',
+    titre: 'Algorithmique',
+    sousTitre: 'Logique & pseudo-code',
+    icone: '🧩',
+    description: 'Raisonner et construire des algorithmes en pseudo-code.',
+    niveaux: [
+      {
+        id: 1,
+        titre: 'Niveau 1',
+        sousTitre: 'Les bases',
+        parcours: [
+          {
+            id: 'algo-n1',
+            module: 'algorithme',
+            niveau: 1,
+            titre: 'Algorithmique — bases',
+            theme: 'Variables, conditions, boucles (pseudo-code)',
+            categories: ['Variables', 'Conditions', 'Boucles'],
+            nbQuestions: 13,
+          },
+        ],
+      },
+      {
+        id: 2,
+        titre: 'Niveau 2',
+        sousTitre: 'Intermédiaire',
+        parcours: [
+          {
+            id: 'algo-n2',
+            module: 'algorithme',
+            niveau: 2,
+            titre: 'Algorithmique intermédiaire',
+            theme: 'Tableaux, recherches/tris, complexité',
+            categories: ['Tableaux', 'Complexité'],
+            nbQuestions: 12,
+          },
+        ],
+      },
+      {
+        id: 3,
+        titre: 'Défis du robot',
+        sousTitre: 'Jeu — séquences, boucles & conditions',
+        parcours: [
+          {
+            id: 'algo-jeu-robot',
+            module: 'algorithme',
+            niveau: 3,
+            jeu: 'robot',
+            titre: 'Le robot sur la grille',
+            theme: 'Programmer un robot avec des blocs',
+            categories: [],
+            nbQuestions: 0,
+          },
+        ],
+      },
+    ],
+  },
 ]
 
 // Liste à plat de tous les niveaux (avec leur module parent en référence).

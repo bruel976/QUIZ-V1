@@ -5,7 +5,7 @@ import { MODULES } from '../data/niveaux.js'
 //   1. choix du MODULE (EC : Web statique, Web dynamique, Composants…)
 //   2. choix du NIVEAU + saisie nom/prénom
 // Chaque niveau ne contient qu'un parcours : il est sélectionné automatiquement.
-export default function Accueil({ onDemarrer }) {
+export default function Accueil({ onDemarrer, onJouer }) {
   const [moduleId, setModuleId] = useState(null)
   const [niveauId, setNiveauId] = useState(null)
   const [nom, setNom] = useState('')
@@ -70,17 +70,26 @@ export default function Accueil({ onDemarrer }) {
           <div className="choix-niveaux">
             {module.niveaux.map((n) => {
               const p = n.parcours[0]
+              const estJeu = Boolean(p.jeu)
               return (
                 <button
                   type="button"
                   key={n.id}
-                  className={`carte-niveau ${niveauId === n.id ? 'carte-niveau-active' : ''}`}
-                  onClick={() => setNiveauId(n.id)}
-                  aria-pressed={niveauId === n.id}
+                  className={`carte-niveau ${estJeu ? 'carte-jeu' : ''} ${
+                    !estJeu && niveauId === n.id ? 'carte-niveau-active' : ''
+                  }`}
+                  onClick={() =>
+                    estJeu
+                      ? onJouer({ module, niveau: n, parcours: p })
+                      : setNiveauId(n.id)
+                  }
+                  aria-pressed={!estJeu && niveauId === n.id}
                 >
                   <span className="niveau-titre">{n.titre}</span>
                   <span className="niveau-theme">{n.sousTitre}</span>
-                  <span className="niveau-nb">{p.nbQuestions} questions</span>
+                  <span className="niveau-nb">
+                    {estJeu ? '🤖 Jouer →' : `${p.nbQuestions} questions`}
+                  </span>
                 </button>
               )
             })}

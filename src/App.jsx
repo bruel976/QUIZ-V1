@@ -4,9 +4,10 @@ import { preparerQuestions, calculerResultat } from './utils/scoring.js'
 import Accueil from './components/Accueil.jsx'
 import Quiz from './components/Quiz.jsx'
 import Resultats from './components/Resultats.jsx'
+import JeuRobot from './components/JeuRobot.jsx'
 
-// Les trois étapes du wizard
-const ETAPES = { ACCUEIL: 'accueil', QUIZ: 'quiz', RESULTATS: 'resultats' }
+// Les étapes du wizard (le jeu est un parcours « libre », sans note)
+const ETAPES = { ACCUEIL: 'accueil', QUIZ: 'quiz', RESULTATS: 'resultats', JEU: 'jeu' }
 
 export default function App() {
   const [etape, setEtape] = useState(ETAPES.ACCUEIL)
@@ -32,6 +33,14 @@ export default function App() {
     setParcours(infos.parcours)
     setReponses({})
     setEtape(ETAPES.QUIZ)
+  }
+
+  // Lancement d'un jeu (parcours marqué `jeu`) depuis l'écran d'accueil
+  function jouer(infos) {
+    setModule(infos.module)
+    setNiveau(infos.niveau)
+    setParcours(infos.parcours)
+    setEtape(ETAPES.JEU)
   }
 
   // Enregistre / met à jour la réponse d'une question
@@ -63,7 +72,9 @@ export default function App() {
   return (
     <div className="app">
       <main className="carte-wizard">
-        {etape === ETAPES.ACCUEIL && <Accueil onDemarrer={demarrer} />}
+        {etape === ETAPES.ACCUEIL && <Accueil onDemarrer={demarrer} onJouer={jouer} />}
+
+        {etape === ETAPES.JEU && <JeuRobot onQuitter={recommencer} />}
 
         {etape === ETAPES.QUIZ && (
           <Quiz

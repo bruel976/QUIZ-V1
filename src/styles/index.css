@@ -26,6 +26,9 @@
   --memoire: #047857;
   --carte-mere: #7c3aed;
   --peripheriques: #0369a1;
+  --variables: #c026d3;
+  --tableaux: #0d9488;
+  --complexite: #4338ca;
   --ombre: 0 10px 30px rgba(0, 0, 60, 0.12);
   --radius: 16px;
 }
@@ -264,6 +267,9 @@ body {
 .badge-mémoire       { background: var(--memoire); }
 .badge-carte-mère    { background: var(--carte-mere); }
 .badge-périphériques { background: var(--peripheriques); }
+.badge-variables  { background: var(--variables); }
+.badge-tableaux   { background: var(--tableaux); }
+.badge-complexité { background: var(--complexite); }
 
 .badge-type {
   background: var(--navy-pale);
@@ -576,4 +582,298 @@ body {
 }
 .lien-retour:hover {
   text-decoration: underline;
+}
+.lien-retour:disabled {
+  color: #aab0c8;
+  cursor: not-allowed;
+}
+
+/* =============================================================
+   Jeu « Le robot sur la grille » (module Algorithmique)
+   ============================================================= */
+
+/* Carte « jeu » sur l'accueil */
+.carte-jeu {
+  border-color: var(--complexite) !important;
+  background: linear-gradient(180deg, #f3f0ff, var(--blanc));
+}
+.carte-jeu .niveau-nb {
+  color: var(--complexite);
+  font-weight: 700;
+}
+
+/* Onglets de défis */
+.defis-onglets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 1.2rem;
+}
+.defi-onglet {
+  border: 2px solid var(--gris-clair);
+  background: var(--blanc);
+  border-radius: 999px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--gris);
+  cursor: pointer;
+  transition: border-color 0.15s, color 0.15s;
+}
+.defi-onglet:hover {
+  border-color: var(--navy);
+}
+.defi-onglet-actif {
+  border-color: var(--navy);
+  background: var(--navy);
+  color: var(--blanc);
+}
+
+.defi-consigne {
+  margin: 0 0 0.4rem;
+  font-weight: 600;
+  color: var(--navy);
+}
+.defi-astuce {
+  margin: 0;
+  font-size: 0.9rem;
+  color: var(--gris);
+}
+
+/* Bandeau de résultat */
+.bilan-jeu {
+  border-radius: 10px;
+  padding: 0.8rem 1rem;
+  margin: 1rem 0 1.2rem;
+  font-weight: 600;
+}
+.bilan-succes {
+  background: var(--vert-pale);
+  color: var(--vert);
+}
+.bilan-choc,
+.bilan-rate {
+  background: var(--rouge-pale);
+  color: var(--rouge);
+}
+
+/* Disposition grille + programme */
+.jeu-zone {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.6rem;
+  align-items: flex-start;
+}
+.jeu-grille {
+  flex: 1 1 280px;
+}
+.jeu-programme {
+  flex: 1 1 300px;
+}
+
+/* La grille */
+.grille-robot {
+  display: grid;
+  gap: 4px;
+  background: var(--gris-clair);
+  padding: 4px;
+  border-radius: 12px;
+  aspect-ratio: 1 / 1;
+}
+.cellule {
+  position: relative;
+  background: var(--navy-pale);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  aspect-ratio: 1 / 1;
+}
+.cellule-mur {
+  background: #3a3f5c;
+  background-image: repeating-linear-gradient(
+    45deg,
+    #2d3148,
+    #2d3148 6px,
+    #3a3f5c 6px,
+    #3a3f5c 12px
+  );
+}
+.cellule-cible {
+  background: var(--vert-pale);
+}
+
+/* Le robot et son cap (flèche de direction) */
+.robot {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: none;
+}
+.robot-emoji {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.robot-cap {
+  position: absolute;
+  top: -2px;
+  font-size: 0.7rem;
+  color: var(--navy);
+  transform-origin: center 14px;
+}
+.robot-choc {
+  animation: secousse 0.4s ease;
+}
+@keyframes secousse {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-4px); }
+  75% { transform: translateX(4px); }
+}
+
+.jeu-commandes {
+  display: flex;
+  gap: 0.6rem;
+  margin-top: 1rem;
+}
+.jeu-commandes .btn {
+  flex: 1;
+  padding: 0.7rem 1rem;
+  font-size: 0.95rem;
+}
+
+/* Éditeur de programme */
+.programme-tete {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.programme-tete h2 {
+  margin: 0;
+  font-size: 1.05rem;
+  color: var(--navy);
+}
+.programme-liste {
+  list-style: none;
+  margin: 0.6rem 0;
+  padding: 0;
+  min-height: 40px;
+}
+.programme-vide {
+  color: var(--gris);
+  font-size: 0.9rem;
+  font-style: italic;
+  padding: 0.6rem;
+  border: 2px dashed var(--gris-clair);
+  border-radius: 8px;
+}
+
+/* Blocs d'instructions */
+.bloc {
+  list-style: none;
+  margin: 4px 0;
+}
+.bloc-simple,
+.bloc-tete {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: var(--blanc);
+  border: 2px solid var(--gris-clair);
+  border-radius: 8px;
+  padding: 0.45rem 0.6rem;
+}
+.bloc-label {
+  font-weight: 600;
+  flex: 1;
+}
+.bloc-repeter > .bloc-tete {
+  border-color: var(--boucles);
+  background: #fff7ed;
+}
+.bloc-si > .bloc-tete {
+  border-color: var(--conditions);
+  background: #f5f3ff;
+}
+.bloc-n {
+  width: 3.2rem;
+  padding: 0.2rem 0.3rem;
+  border: 1px solid var(--gris-clair);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  text-align: center;
+}
+.bloc-suppr {
+  border: none;
+  background: none;
+  color: var(--rouge);
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.95rem;
+  padding: 0 0.2rem;
+}
+.bloc-suppr:disabled {
+  color: #c9ccd9;
+  cursor: not-allowed;
+}
+.bloc-corps {
+  list-style: none;
+  margin: 0;
+  padding: 0.4rem 0 0.4rem 1rem;
+  margin-left: 0.6rem;
+  border-left: 3px solid var(--gris-clair);
+}
+.bloc-repeter > .bloc-corps {
+  border-left-color: var(--boucles);
+}
+.bloc-si > .bloc-corps {
+  border-left-color: var(--conditions);
+}
+.bloc-sinon {
+  margin: 0.2rem 0 0 0.4rem;
+  font-weight: 700;
+  color: var(--conditions);
+  font-size: 0.9rem;
+}
+
+/* Palette « + ajouter un bloc » */
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+}
+.palette button {
+  border: 1px dashed var(--navy);
+  background: var(--navy-pale);
+  color: var(--navy);
+  border-radius: 999px;
+  padding: 0.3rem 0.7rem;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+.palette button:hover {
+  background: #dfe3fb;
+}
+.palette-petite button {
+  font-size: 0.75rem;
+  padding: 0.2rem 0.55rem;
+}
+
+.jeu-quitter {
+  margin-top: 1.6rem;
+}
+
+@media (max-width: 560px) {
+  .jeu-zone {
+    flex-direction: column;
+  }
+  .jeu-grille {
+    width: 100%;
+    max-width: 320px;
+    margin: 0 auto;
+  }
 }
