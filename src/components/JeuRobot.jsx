@@ -98,7 +98,12 @@ export default function JeuRobot({ onQuitter }) {
             {robotIci && (
               <span className={`robot${choc ? ' robot-choc' : ''}`}>
                 <span className="robot-emoji">🤖</span>
-                <span className="robot-cap" style={{ transform: `rotate(${ANGLE[etatRobot.dir]}deg)` }}>
+                <span
+                  className="robot-cap"
+                  style={{
+                    transform: `translate(-50%, -50%) rotate(${ANGLE[etatRobot.dir]}deg) translateY(-1.05em)`,
+                  }}
+                >
                   ▲
                 </span>
               </span>
@@ -110,7 +115,11 @@ export default function JeuRobot({ onQuitter }) {
     return (
       <div
         className="grille-robot"
-        style={{ gridTemplateColumns: `repeat(${defi.cols}, 1fr)` }}
+        style={{
+          gridTemplateColumns: `repeat(${defi.cols}, 1fr)`,
+          gridTemplateRows: `repeat(${defi.rows}, 1fr)`,
+          aspectRatio: `${defi.cols} / ${defi.rows}`,
+        }}
       >
         {cellules}
       </div>

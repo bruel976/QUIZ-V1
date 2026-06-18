@@ -675,10 +675,10 @@ body {
 .grille-robot {
   display: grid;
   gap: 4px;
+  width: 100%;
   background: var(--gris-clair);
   padding: 4px;
   border-radius: 12px;
-  aspect-ratio: 1 / 1;
 }
 .cellule {
   position: relative;
@@ -687,8 +687,8 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.5rem;
-  aspect-ratio: 1 / 1;
+  font-size: clamp(1rem, 4vw, 1.5rem);
+  min-width: 0;
 }
 .cellule-mur {
   background: #3a3f5c;
@@ -710,18 +710,19 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  transition: none;
+  line-height: 1;
 }
 .robot-emoji {
-  font-size: 1.6rem;
+  font-size: clamp(1rem, 4vw, 1.5rem);
   line-height: 1;
 }
 .robot-cap {
   position: absolute;
-  top: -2px;
-  font-size: 0.7rem;
+  left: 50%;
+  top: 50%;
+  font-size: 0.6rem;
   color: var(--navy);
-  transform-origin: center 14px;
+  pointer-events: none;
 }
 .robot-choc {
   animation: secousse 0.4s ease;
