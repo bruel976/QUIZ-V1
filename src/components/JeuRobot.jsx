@@ -18,6 +18,18 @@ const LABELS = {
 }
 
 // Jeu « Le robot sur la grille » — entraînement libre, sans note.
+// Clé de stockage de la progression (défis réussis).
+const CLE_PROGRESSION = 'sirel-robot-reussis'
+
+function chargerReussis() {
+  try {
+    const brut = localStorage.getItem(CLE_PROGRESSION)
+    return brut ? new Set(JSON.parse(brut)) : new Set()
+  } catch {
+    return new Set()
+  }
+}
+
 export default function JeuRobot({ onQuitter }) {
   const [indexDefi, setIndexDefi] = useState(0)
   const [programme, setProgramme] = useState([])
@@ -25,10 +37,12 @@ export default function JeuRobot({ onQuitter }) {
   const [frameIndex, setFrameIndex] = useState(0)
   const [enCours, setEnCours] = useState(false) // animation en lecture
   const [bilan, setBilan] = useState(null) // { succes, collision }
+  const [reussis, setReussis] = useState(chargerReussis) // ids des défis réussis
 
   const defi = DEFIS_ROBOT[indexDefi]
   const nbBlocs = compterBlocs(programme)
   const limiteAtteinte = nbBlocs >= defi.maxBlocs
+  const estDernier = indexDefi === DEFIS_ROBOT.length - 1
 
   // État affiché du robot : pendant l'animation on suit la trace,
   // sinon on montre la position de départ.
@@ -46,6 +60,30 @@ export default function JeuRobot({ onQuitter }) {
     return () => clearTimeout(t)
   }, [enCours, frameIndex, frames])
 
+  // Réussite → on mémorise le défi comme réussi (progression persistante).
+  useEffect(() => {
+    if (animationFinie && bilan?.succes && !reussis.has(defi.id)) {
+      setReussis((prev) => new Set(prev).add(defi.id))
+    }
+  }, [animationFinie, bilan, defi.id, reussis])
+
+  // Sauvegarde la progression dans le navigateur à chaque changement.
+  useEffect(() => {
+    try {
+      localStorage.setItem(CLE_PROGRESSION, JSON.stringify([...reussis]))
+    } catch {
+      /* stockage indisponible : on ignore */
+    }
+  }, [reussis])
+
+  // Réussite → passage automatique au défi suivant (sauf sur le dernier).
+  useEffect(() => {
+    if (!animationFinie || !bilan?.succes || estDernier) return undefined
+    const t = setTimeout(() => choisirDefi(indexDefi + 1), 1700)
+    return () => clearTimeout(t)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [animationFinie, bilan, estDernier, indexDefi])
+
   // Remet le robot au départ et efface la trace (sans toucher au programme).
   function reinitialiser() {
     setFrames(null)
@@ -59,6 +97,11 @@ export default function JeuRobot({ onQuitter }) {
     setIndexDefi(i)
     setProgramme([])
     reinitialiser()
+  }
+
+  // Efface toute la progression mémorisée.
+  function reinitialiserProgression() {
+    setReussis(new Set())
   }
 
   function ajouter(parentId, champ, type) {
@@ -229,18 +272,36 @@ export default function JeuRobot({ onQuitter }) {
         Assemble un programme avec des blocs pour amener le robot jusqu’au drapeau.
       </p>
 
+      {/* Progression */}
+      <div className="progression-jeu">
+        <span className="progression-compteur">
+          ✅ {reussis.size} / {DEFIS_ROBOT.length} défis réussis
+        </span>
+        {reussis.size > 0 && (
+          <button type="button" className="lien-retour" onClick={reinitialiserProgression}>
+            ↺ Réinitialiser la progression
+          </button>
+        )}
+      </div>
+
       {/* Sélecteur de défis */}
       <div className="defis-onglets">
-        {DEFIS_ROBOT.map((d, i) => (
-          <button
-            type="button"
-            key={d.id}
-            className={`defi-onglet${i === indexDefi ? ' defi-onglet-actif' : ''}`}
-            onClick={() => choisirDefi(i)}
-          >
-            {d.titre}
-          </button>
-        ))}
+        {DEFIS_ROBOT.map((d, i) => {
+          const reussi = reussis.has(d.id)
+          return (
+            <button
+              type="button"
+              key={d.id}
+              className={`defi-onglet${i === indexDefi ? ' defi-onglet-actif' : ''}${
+                reussi ? ' defi-onglet-reussi' : ''
+              }`}
+              onClick={() => choisirDefi(i)}
+            >
+              {reussi && <span className="onglet-coche">✓</span>}
+              {d.titre}
+            </button>
+          )
+        })}
       </div>
 
       <div className="bloc-regles">
@@ -261,7 +322,9 @@ export default function JeuRobot({ onQuitter }) {
           }`}
         >
           {bilan.succes
-            ? `🎉 Bravo ! Drapeau atteint en ${compterBlocs(programme)} bloc(s).`
+            ? estDernier
+              ? `🏆 Félicitations ! Tu as terminé les ${DEFIS_ROBOT.length} défis !`
+              : `🎉 Bravo ! Résolu en ${compterBlocs(programme)} bloc(s) — niveau suivant…`
             : bilan.collision
               ? '💥 Aïe ! Le robot a heurté un mur. Corrige ton programme.'
               : '🤖 Le robot n’a pas atteint le drapeau. Réessaie !'}

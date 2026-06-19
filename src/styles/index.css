@@ -602,12 +602,42 @@ body {
   font-weight: 700;
 }
 
+/* Progression du jeu */
+.progression-jeu {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+  margin-bottom: 0.8rem;
+}
+.progression-compteur {
+  font-weight: 700;
+  font-size: 0.9rem;
+  color: var(--vert);
+}
+
 /* Onglets de défis */
 .defis-onglets {
   display: flex;
   flex-wrap: wrap;
   gap: 0.5rem;
   margin-bottom: 1.2rem;
+}
+.defi-onglet-reussi {
+  border-color: var(--vert);
+}
+.defi-onglet-reussi.defi-onglet-actif {
+  background: var(--vert);
+  border-color: var(--vert);
+}
+.onglet-coche {
+  color: var(--vert);
+  font-weight: 800;
+  margin-right: 0.3rem;
+}
+.defi-onglet-actif .onglet-coche {
+  color: var(--blanc);
 }
 .defi-onglet {
   border: 2px solid var(--gris-clair);
