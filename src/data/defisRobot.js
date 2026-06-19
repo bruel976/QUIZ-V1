@@ -1,16 +1,19 @@
 // =============================================================
 //  Défis du jeu « Le robot sur la grille » (module Algorithmique)
-//  Difficulté croissante : séquence → virage → boucle → murs →
-//  conditions (Si mur devant).
+//  10 défis à difficulté croissante : séquence → virage → boucle →
+//  murs → conditions → motifs → boucles imbriquées → labyrinthe.
 //
 //  Repère : x = colonne (→), y = ligne (↓), origine en haut à gauche.
 //  dir : 'N' | 'E' | 'S' | 'O'. murs : cases infranchissables.
+//  maxBlocs : nombre maximal de blocs autorisés (encourage les boucles).
+//  difficulte : 'Facile' | 'Moyen' | 'Difficile' | 'Expert'.
 // =============================================================
 
 export const DEFIS_ROBOT = [
   {
     id: 'droite',
     titre: '1 · Ligne droite',
+    difficulte: 'Facile',
     consigne: 'Amène le robot 🤖 jusqu’au drapeau 🎯, tout droit.',
     astuce: 'Plutôt que d’empiler des « Avancer », essaie un bloc « Répéter ».',
     cols: 5,
@@ -18,10 +21,12 @@ export const DEFIS_ROBOT = [
     robot: { x: 0, y: 1, dir: 'E' },
     cible: { x: 4, y: 1 },
     murs: [],
+    maxBlocs: 4,
   },
   {
     id: 'virage',
     titre: '2 · Le virage',
+    difficulte: 'Facile',
     consigne: 'Le drapeau est en haut à droite : il faudra tourner en chemin.',
     astuce: 'Avance jusqu’au coin, puis « Tourner à gauche » pour monter.',
     cols: 5,
@@ -29,10 +34,12 @@ export const DEFIS_ROBOT = [
     robot: { x: 0, y: 4, dir: 'E' },
     cible: { x: 4, y: 0 },
     murs: [],
+    maxBlocs: 6,
   },
   {
     id: 'longue',
     titre: '3 · La longue ligne',
+    difficulte: 'Facile',
     consigne: 'Un long couloir… écris le programme le plus COURT possible.',
     astuce: 'Une boucle « Répéter N fois » remplace 7 « Avancer ».',
     cols: 8,
@@ -40,10 +47,12 @@ export const DEFIS_ROBOT = [
     robot: { x: 0, y: 1, dir: 'E' },
     cible: { x: 7, y: 1 },
     murs: [],
+    maxBlocs: 3,
   },
   {
     id: 'detour',
     titre: '4 · Le détour',
+    difficulte: 'Moyen',
     consigne: 'Un mur barre le passage : contourne-le pour rejoindre le drapeau.',
     astuce: 'Monte (ou descends), longe le mur, puis redescends vers la cible.',
     cols: 5,
@@ -55,10 +64,12 @@ export const DEFIS_ROBOT = [
       { x: 2, y: 2 },
       { x: 2, y: 3 },
     ],
+    maxBlocs: 10,
   },
   {
     id: 'mur',
     titre: '5 · Suis le mur',
+    difficulte: 'Moyen',
     consigne:
       'Programme une règle générale avec « Si mur devant » : tourne quand un mur te bloque, sinon avance.',
     astuce: 'Répéter 7 fois { Si mur devant → Tourner à droite, Sinon → Avancer }.',
@@ -71,5 +82,93 @@ export const DEFIS_ROBOT = [
       { x: 1, y: 4 },
       { x: 3, y: 4 },
     ],
+    maxBlocs: 6,
+  },
+  {
+    id: 'escalier',
+    titre: '6 · L’escalier',
+    difficulte: 'Moyen',
+    consigne: 'Le robot doit monter en escalier (un pas à droite, un pas en haut).',
+    astuce: 'Mets un MOTIF dans la boucle : Répéter { Avancer, Gauche, Avancer, Droite }.',
+    cols: 5,
+    rows: 5,
+    robot: { x: 0, y: 4, dir: 'E' },
+    cible: { x: 4, y: 0 },
+    murs: [],
+    maxBlocs: 6,
+  },
+  {
+    id: 'serpent',
+    titre: '7 · Le serpent',
+    difficulte: 'Difficile',
+    consigne: 'Deux murs forment un S : faufile-toi de droite puis de gauche.',
+    astuce: 'Avance jusqu’au passage, change de côté, recommence vers le bas.',
+    cols: 5,
+    rows: 5,
+    robot: { x: 0, y: 0, dir: 'E' },
+    cible: { x: 0, y: 4 },
+    murs: [
+      { x: 0, y: 1 },
+      { x: 1, y: 1 },
+      { x: 2, y: 1 },
+      { x: 3, y: 1 },
+      { x: 1, y: 3 },
+      { x: 2, y: 3 },
+      { x: 3, y: 3 },
+      { x: 4, y: 3 },
+    ],
+    maxBlocs: 12,
+  },
+  {
+    id: 'coude',
+    titre: '8 · Le couloir coudé',
+    difficulte: 'Difficile',
+    consigne:
+      'Un couloir qui tourne deux fois. Écris UNE règle « Si mur devant » qui marche partout.',
+    astuce: 'Répéter 10 fois { Si mur devant → Tourner à droite, Sinon → Avancer }.',
+    cols: 5,
+    rows: 5,
+    robot: { x: 0, y: 0, dir: 'E' },
+    cible: { x: 1, y: 3 },
+    murs: [
+      { x: 4, y: 0 },
+      { x: 3, y: 4 },
+      { x: 0, y: 3 },
+      { x: 1, y: 2 },
+    ],
+    maxBlocs: 5,
+  },
+  {
+    id: 'carre',
+    titre: '9 · Le tour du carré',
+    difficulte: 'Difficile',
+    consigne: 'Fais le tour du grand carré et arrête-toi juste sous le départ.',
+    astuce: 'Boucle DANS une boucle : Répéter 3 { Répéter 4 fois Avancer, Tourner à droite }.',
+    cols: 5,
+    rows: 5,
+    robot: { x: 0, y: 0, dir: 'E' },
+    cible: { x: 0, y: 1 },
+    murs: [],
+    maxBlocs: 7,
+  },
+  {
+    id: 'labyrinthe',
+    titre: '10 · Le grand labyrinthe',
+    difficulte: 'Expert',
+    consigne:
+      'Le défi ultime : un long couloir à plusieurs coudes. Combine boucles imbriquées ET « Si mur devant ».',
+    astuce: 'Répéter 4 fois { Répéter 4 fois { Si mur devant → Droite, Sinon → Avancer } }.',
+    cols: 6,
+    rows: 6,
+    robot: { x: 0, y: 0, dir: 'E' },
+    cible: { x: 1, y: 2 },
+    murs: [
+      { x: 5, y: 0 },
+      { x: 4, y: 5 },
+      { x: 0, y: 4 },
+      { x: 1, y: 1 },
+      { x: 2, y: 2 },
+    ],
+    maxBlocs: 6,
   },
 ]

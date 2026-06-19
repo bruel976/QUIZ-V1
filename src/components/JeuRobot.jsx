@@ -27,6 +27,8 @@ export default function JeuRobot({ onQuitter }) {
   const [bilan, setBilan] = useState(null) // { succes, collision }
 
   const defi = DEFIS_ROBOT[indexDefi]
+  const nbBlocs = compterBlocs(programme)
+  const limiteAtteinte = nbBlocs >= defi.maxBlocs
 
   // État affiché du robot : pendant l'animation on suit la trace,
   // sinon on montre la position de départ.
@@ -60,7 +62,10 @@ export default function JeuRobot({ onQuitter }) {
   }
 
   function ajouter(parentId, champ, type) {
-    setProgramme((p) => ajouterInstruction(p, parentId, champ, creerInstruction(type)))
+    setProgramme((p) => {
+      if (compterBlocs(p) >= defi.maxBlocs) return p // plafond atteint
+      return ajouterInstruction(p, parentId, champ, creerInstruction(type))
+    })
   }
   function supprimer(id) {
     setProgramme((p) => supprimerInstruction(p, id))
@@ -130,11 +135,11 @@ export default function JeuRobot({ onQuitter }) {
   function palette(parentId, champ, petite = false) {
     return (
       <div className={`palette${petite ? ' palette-petite' : ''}`}>
-        <button type="button" onClick={() => ajouter(parentId, champ, 'avancer')}>＋ Avancer</button>
-        <button type="button" onClick={() => ajouter(parentId, champ, 'gauche')}>＋ ↺ Gauche</button>
-        <button type="button" onClick={() => ajouter(parentId, champ, 'droite')}>＋ ↻ Droite</button>
-        <button type="button" onClick={() => ajouter(parentId, champ, 'repeter')}>＋ 🔁 Répéter</button>
-        <button type="button" onClick={() => ajouter(parentId, champ, 'si')}>＋ ❓ Si mur</button>
+        <button type="button" disabled={limiteAtteinte} onClick={() => ajouter(parentId, champ, 'avancer')}>＋ Avancer</button>
+        <button type="button" disabled={limiteAtteinte} onClick={() => ajouter(parentId, champ, 'gauche')}>＋ ↺ Gauche</button>
+        <button type="button" disabled={limiteAtteinte} onClick={() => ajouter(parentId, champ, 'droite')}>＋ ↻ Droite</button>
+        <button type="button" disabled={limiteAtteinte} onClick={() => ajouter(parentId, champ, 'repeter')}>＋ 🔁 Répéter</button>
+        <button type="button" disabled={limiteAtteinte} onClick={() => ajouter(parentId, champ, 'si')}>＋ ❓ Si mur</button>
       </div>
     )
   }
@@ -239,7 +244,12 @@ export default function JeuRobot({ onQuitter }) {
       </div>
 
       <div className="bloc-regles">
-        <p className="defi-consigne">{defi.consigne}</p>
+        <p className="defi-consigne">
+          <span className={`defi-niveau niveau-${defi.difficulte.toLowerCase()}`}>
+            {defi.difficulte}
+          </span>
+          {defi.consigne}
+        </p>
         <p className="defi-astuce">💡 {defi.astuce}</p>
       </div>
 
@@ -285,7 +295,12 @@ export default function JeuRobot({ onQuitter }) {
         {/* Colonne droite : éditeur de programme */}
         <div className="jeu-programme">
           <div className="programme-tete">
-            <h2>Mon programme</h2>
+            <h2>
+              Mon programme{' '}
+              <span className={`compteur-blocs${limiteAtteinte ? ' compteur-plein' : ''}`}>
+                {nbBlocs} / {defi.maxBlocs} blocs
+              </span>
+            </h2>
             <button
               type="button"
               className="lien-retour"
@@ -298,6 +313,11 @@ export default function JeuRobot({ onQuitter }) {
               🗑 Tout effacer
             </button>
           </div>
+          {limiteAtteinte && (
+            <p className="limite-message">
+              ⚠️ Limite de {defi.maxBlocs} blocs atteinte — pense aux boucles pour faire plus court !
+            </p>
+          )}
           <ul className="programme-liste">
             {programme.length === 0 && (
               <li className="programme-vide">
